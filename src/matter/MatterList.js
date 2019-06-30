@@ -2,6 +2,7 @@ import React, {useState, useEffect } from 'react'
 import { API, graphqlOperation } from 'aws-amplify'
 import { listMatters } from '../../src/graphql/queries'
 import { createMatter, deleteMatter } from '../../src/graphql/mutations'
+import ProjectList from '../project/ProjectList'
 
 export default function MatterList(props) {
     const [ matters, updateMatters] = useState([])
@@ -21,6 +22,8 @@ export default function MatterList(props) {
         }
 
         await API.graphql(graphqlOperation(createMatter, { input: newMatter }))
+        updateTitle('')
+        updateDescription('')
         getMatters()
     }
   }
@@ -36,8 +39,6 @@ export default function MatterList(props) {
 
   const handleTitleChange = e => updateTitle(e.target.value)
   const handleDescriptionChange = e => updateDescription(e.target.value)
-  
-  
   
   const renderCreateMatter = () => {
       return (
@@ -55,14 +56,13 @@ export default function MatterList(props) {
 
   return (
       <React.Fragment>
-        <h4>
-            Matter List
-        </h4>
+        <h2>Matter List</h2>
         {
             matters.map((matter, index) => (
                 <div>
                     <p key={ index }>{ matter.id } - { matter.title }</p>
-                    <button onClick={ removeMatter(matter.id) }>Delete</button>
+                    <ProjectList matterId={matter.id} />
+                    <button onClick={ removeMatter(matter.id) }>Delete Matter</button>
                     <br />
                     ----------------------------------------------
                 </div>
